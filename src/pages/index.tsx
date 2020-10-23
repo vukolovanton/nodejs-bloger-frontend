@@ -4,7 +4,18 @@ import NextLink from "next/link";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import React, { useState } from "react";
-import { Box, Button, Flex, Heading, Link, Stack, Text } from "@chakra-ui/core";
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	Icon,
+	IconButton,
+	Link,
+	Stack,
+	Text,
+} from "@chakra-ui/core";
+import UpvoteSection from "../components/UpvoteSection";
 
 const Index = () => {
 	const [variables, setVariables] = useState({
@@ -12,9 +23,7 @@ const Index = () => {
 		cursor: null as null | string,
 	});
 	const [{ data, fetching }] = usePostsQuery({
-		variables: {
-			limit: 10,
-		},
+		variables,
 	});
 
 	return (
@@ -29,10 +38,14 @@ const Index = () => {
 			{data ? (
 				<Stack>
 					{data.posts.posts.map((p) => (
-						<Box key={p.id} p={5} shadow="md" borderWidth="1px">
-							<Heading fontSize="xl">{p.title}</Heading>
-							<Text mt={4}>{p.textSnippet}</Text>
-						</Box>
+						<Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+							<UpvoteSection post={p} />
+							<Box>
+								<Heading fontSize="xl">{p.title}</Heading>
+								<Text>by {p.creator.username}</Text>
+								<Text mt={4}>{p.text}</Text>
+							</Box>
+						</Flex>
 					))}
 				</Stack>
 			) : null}
